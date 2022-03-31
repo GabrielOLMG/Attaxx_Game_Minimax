@@ -1,7 +1,8 @@
 import os
 import random
+import pygame
 
-from confg import TABULEIROS_PATH
+from confg import *
 
 
 class Tabuleiro:
@@ -48,3 +49,14 @@ class Tabuleiro:
                 elif valor == 2:
                     jg2_count+=1
         return True, (jg1_count,jg2_count)
+
+
+    def desenha_tabuleiro(self, tela):
+        '''
+            Desenha Tabuleiro Usando Pygame
+        '''
+        for i,linha in enumerate(self.tabuleiro):
+            for j,valor in enumerate(self.tabuleiro):
+                cor = VERMELHO
+                if (i+j)%2 == 0: cor = BRANCO
+                pygame.draw.rect(tela, cor, pygame.Rect(i*TAMANHO_QUADRADO, j*TAMANHO_QUADRADO, TAMANHO_QUADRADO, TAMANHO_QUADRADO)) 
