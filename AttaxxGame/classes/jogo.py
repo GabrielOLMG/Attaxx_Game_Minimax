@@ -91,7 +91,46 @@ class Jogo:
         else:
             print("JOGADA IMPOSSIVEL - refaça")
             self.turno_player(jogador)
+            return
+
+        self.lista_oponentes_perto(proximo, jogador)        
+        
     
+    def lista_oponentes_perto(self, proximo, jogador):
+        '''
+            return:
+                lista com as posições onde estão os inimigos por perto
+        '''
+        jogador_inimigo = 2 if jogador == 1 else 1
+        tabuleiro = self.tabuleiro.tabuleiro
+
+        coordenadas_inimigo = []
+
+        possiveis_colunas = list(range(max(0,proximo[1]-1),min(self.tabuleiro.size -1,proximo[1]+1)+1))
+        if proximo[0] != 0:
+            # verifica linha de cima:
+            for i in possiveis_colunas:
+                atual = tabuleiro[proximo[0]+1][i]
+                if atual == jogador_inimigo:
+                    coordenadas_inimigo.append([proximo[0]+1,i])
+
+        if proximo[0] < self.tabuleiro.size:
+            # verifica linha de baixo:
+            for i in possiveis_colunas:
+                atual = tabuleiro[proximo[0]-1][i]
+                if atual == jogador_inimigo:
+                    coordenadas_inimigo.append([proximo[0]-1,i])
+        
+        # varifica laterais
+        if proximo[1]-1 >= 0 and tabuleiro[proximo[0]][proximo[1]-1] == jogador_inimigo:
+            coordenadas_inimigo.append([proximo[0],proximo[1]-1])
+
+        if proximo[1]+1 < self.tabuleiro.size and tabuleiro[proximo[0]][proximo[1]+1] == jogador_inimigo:
+            coordenadas_inimigo.append([proximo[0],proximo[1]+1])
+        print(coordenadas_inimigo)
+
+
+
 
     def fim_jogo(self):
         self.tabuleiro.printa_tabuleiro()

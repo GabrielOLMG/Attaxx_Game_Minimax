@@ -9,7 +9,6 @@ class Tabuleiro:
         #self.path = os.path.join(TABULEIROS_PATH,random.choice(os.listdir(TABULEIROS_PATH)))
         self.path = "tabuleiros/tab4.txt"
         self.monta_tabuleiro(self.path)
-        pass
 
 
     def monta_tabuleiro(self, path):
