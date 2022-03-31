@@ -37,8 +37,14 @@ class Tabuleiro:
 
 
     def tabuleiro_completo(self):
+        jg1_count = 0
+        jg2_count = 0
         for linha in self.tabuleiro:
             for valor in linha:
                 if valor == 0:
-                    return False
-        return True
+                    return False, None
+                elif valor == 1:
+                    jg1_count+=1
+                elif valor == 2:
+                    jg2_count+=1
+        return True, (jg1_count,jg2_count)

@@ -21,8 +21,9 @@ class Jogo:
         self.tabuleiro.printa_tabuleiro()
         self.turno_player(jogador_vez)
 
-        if self.tabuleiro.tabuleiro_completo():
-            self.fim_jogo()
+        status = self.tabuleiro.tabuleiro_completo()
+        if status[0]:
+            self.fim_jogo(status[1])
             return
 
         self.jogo(1 if jogador_vez == 2 else 2)
@@ -42,8 +43,6 @@ class Jogo:
 
         self.consequencia_jogada(jogada_valida, atual, proximo, jogador)
         
-
-    
 
     def verifica_jogada(self, proximo, atual, jogador):
         '''
@@ -93,7 +92,8 @@ class Jogo:
             self.turno_player(jogador)
             return
 
-        self.lista_oponentes_perto(proximo, jogador)        
+        lista_oponentes = self.lista_oponentes_perto(proximo, jogador)        
+        self.conquista_oponente(lista_oponentes, jogador)
         
     
     def lista_oponentes_perto(self, proximo, jogador):
@@ -107,19 +107,22 @@ class Jogo:
         coordenadas_inimigo = []
 
         possiveis_colunas = list(range(max(0,proximo[1]-1),min(self.tabuleiro.size -1,proximo[1]+1)+1))
+        print
         if proximo[0] != 0:
             # verifica linha de cima:
             for i in possiveis_colunas:
-                atual = tabuleiro[proximo[0]+1][i]
+                if proximo[0]-1 < 0: continue
+                atual = tabuleiro[proximo[0]-1][i]
                 if atual == jogador_inimigo:
-                    coordenadas_inimigo.append([proximo[0]+1,i])
+                    coordenadas_inimigo.append([proximo[0]-1,i])
 
         if proximo[0] < self.tabuleiro.size:
             # verifica linha de baixo:
             for i in possiveis_colunas:
-                atual = tabuleiro[proximo[0]-1][i]
+                if proximo[0]+1 >= self.tabuleiro.size: continue
+                atual = tabuleiro[proximo[0]+1][i]
                 if atual == jogador_inimigo:
-                    coordenadas_inimigo.append([proximo[0]-1,i])
+                    coordenadas_inimigo.append([proximo[0]+1,i])
         
         # varifica laterais
         if proximo[1]-1 >= 0 and tabuleiro[proximo[0]][proximo[1]-1] == jogador_inimigo:
@@ -127,11 +130,20 @@ class Jogo:
 
         if proximo[1]+1 < self.tabuleiro.size and tabuleiro[proximo[0]][proximo[1]+1] == jogador_inimigo:
             coordenadas_inimigo.append([proximo[0],proximo[1]+1])
-        print(coordenadas_inimigo)
+
+        return coordenadas_inimigo
 
 
+    def conquista_oponente(self, lista_oponentes, jogador):
+        for oponente_posicao in lista_oponentes:
+            self.tabuleiro.add_valor_tabuleiro(oponente_posicao, jogador)
 
 
-    def fim_jogo(self):
+    def fim_jogo(self, contador_final):
         self.tabuleiro.printa_tabuleiro()
-        print("FIM DO JOGO")
+        if contador_final[0] > contador_final[1]:
+            print(f"PARABENS PLAYER 1 | Player 1 = {contador_final[0]} Player 2 = {contador_final[1]}")    
+        elif contador_final[1] > contador_final[0]:
+            print(f"PARABENS PLAYER 2 | Player 2 = {contador_final[1]} Player 1 = {contador_final[0]}")  
+        else:
+            print(f"FIM DO JOGO - OCORREU UM EMPATE | Player 1 = {contador_final[0]} Player 2 = {contador_final[1]}")
